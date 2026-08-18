@@ -1,0 +1,67 @@
+name: Repository policy
+
+on:
+  pull_request_target:
+    branches: [dev, main]
+    types: [opened, synchronize, reopened, ready_for_review]
+  pull_request_review:
+    types: [submitted, dismissed]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  policy:
+    name: Repository policy
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Validate contribution and promotion policy
+        env:
+          BASE_BRANCH: ${{ github.event.pull_request.base.ref }}
+          GH_TOKEN: ${{ github.token }}
+          HEAD_BRANCH: ${{ github.event.pull_request.head.ref }}
+          HEAD_REPOSITORY: ${{ github.event.pull_request.head.repo.full_name }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          if [[ "$BASE_BRANCH" == "main" ]]; then
+            if [[ "$HEAD_BRANCH" != "dev" || "$HEAD_REPOSITORY" != "$REPOSITORY" ]]; then
+              echo "Production accepts only pull requests from this repository's dev branch."
+              exit 1
+            fi
+
+            if [[ "$PR_AUTHOR" != "ogrre" ]]; then
+              echo "Only ogrre may open a production promotion pull request."
+              exit 1
+            fi
+
+            echo "Valid owner-managed dev to main promotion."
+            exit 0
+          fi
+
+          if [[ "$BASE_BRANCH" != "dev" ]]; then
+            echo "Unsupported target branch: $BASE_BRANCH"
+            exit 1
+          fi
+
+          if [[ "$PR_AUTHOR" == "ogrre" ]]; then
+            echo "Development pull request opened by the repository owner."
+            exit 0
+          fi
+
+          approval_count=$(gh api \
+            --paginate \
+            "repos/$REPOSITORY/pulls/$PR_NUMBER/reviews" \
+            --jq '[.[] | select(.user.login == "ogrre" and .state == "APPROVED")] | length' \
+            | awk '{ total += $1 } END { print total + 0 }')
+
+          if [[ "$approval_count" -lt 1 ]]; then
+            echo "A review approval from ogrre is required for external contributions."
+            exit 1
+          fi
+
+          echo "The repository owner approved this contribution."
