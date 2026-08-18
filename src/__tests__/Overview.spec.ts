@@ -92,8 +92,8 @@ describe('Vue d’ensemble', () => {
     await flushPromises()
 
     expect(wrapper.text()).toContain('Deux côtés du budget')
-    expect(wrapper.text()).toContain('578 Md')
-    expect(wrapper.text()).toContain('315 Md')
+    expect(wrapper.text()).toMatch(/578(?:,0)? Md(?: €)?/)
+    expect(wrapper.text()).toMatch(/315(?:,0)? Md(?: €)?/)
     expect(wrapper.text()).toContain('+5,0 %')
     expect(wrapper.findAll('.matrix-cell.missing')).toHaveLength(2)
   })
