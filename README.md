@@ -45,6 +45,12 @@ VITE_API_BASE_URL=https://ou-vont-mes-impots.staging.betta.black
 
 Cette valeur est intégrée au bundle lors du build : elle ne doit contenir aucun secret. Les déploiements de production doivent être déclenchés depuis la branche `main` une fois sa CI réussie.
 
+Les branches de travail sont proposées par pull request vers `dev`. Cette
+branche correspond au staging Vercel et utilise les variables Preview. La
+production est déployée depuis `main`, uniquement après une pull request de
+promotion `dev` vers `main`. Les pushes directs sont interdits sur ces deux
+branches.
+
 ## Commandes
 
 ```sh
