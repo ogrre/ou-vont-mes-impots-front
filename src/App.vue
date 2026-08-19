@@ -15,7 +15,7 @@
       href="https://github.com/ogrre/ou-vont-mes-impots-front"
       target="_blank"
       rel="noopener noreferrer"
-      >API open source ↗</a
+      >Code source ↗</a
     >
   </header>
 
@@ -31,6 +31,27 @@
         Projet indépendant, sans affiliation avec le Gouvernement français ou une administration
         publique.
       </p>
+      <section class="public-api" aria-labelledby="public-api-title">
+        <h2 id="public-api-title">Une API publique et gratuite</h2>
+        <p>
+          Les données normalisées utilisées par ce site sont accessibles librement en lecture
+          seule. Consultez la documentation interactive ou réutilisez le code de l’API open source.
+        </p>
+        <p class="public-api-links">
+          <a
+            href="https://ou-vont-mes-impots.staging.dokploy.betta.black/docs/api"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Documentation de l’API <span aria-hidden="true">↗</span></a
+          >
+          <a
+            href="https://github.com/ogrre/ou-vont-mes-impots-api"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Code source de l’API <span aria-hidden="true">↗</span></a
+          >
+        </p>
+      </section>
     </div>
     <nav class="footer-nav" aria-label="Informations légales">
       <RouterLink to="/accessibilite">Accessibilité : non conforme</RouterLink

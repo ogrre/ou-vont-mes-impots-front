@@ -81,6 +81,11 @@ describe('App', () => {
     expect(wrapper.get('h1').text()).toContain('Où va l’argent')
     expect(wrapper.text()).toContain('Enseignement scolaire')
     expect(wrapper.text()).toContain('Direction du Budget')
+    expect(wrapper.text()).toContain('Une API publique et gratuite')
+    expect(wrapper.get('a[href$="/docs/api"]').attributes('target')).toBe('_blank')
+    expect(wrapper.get('a[href="https://github.com/ogrre/ou-vont-mes-impots-api"]').text()).toContain(
+      'Code source de l’API',
+    )
     const cpHelp = wrapper.get('[aria-label="Comprendre CP"]')
     await cpHelp.trigger('click')
     expect(wrapper.text()).toContain('Crédits de paiement')
