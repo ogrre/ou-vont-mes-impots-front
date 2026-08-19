@@ -611,6 +611,29 @@ footer p {
   margin: 0;
   line-height: 1.5;
 }
+.public-api {
+  max-width: 600px;
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid #48665b;
+}
+.public-api h2 {
+  margin-bottom: 0.45rem;
+  color: #fff;
+  font-size: 1.05rem;
+  letter-spacing: normal;
+}
+.public-api-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem 1.25rem;
+  margin-top: 0.75rem;
+}
+.public-api-links a {
+  color: #fff;
+  font-weight: 700;
+  text-underline-offset: 0.2em;
+}
 .footer-nav {
   margin-left: auto;
   display: grid;
