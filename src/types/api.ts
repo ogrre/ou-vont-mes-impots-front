@@ -1,6 +1,6 @@
 export type Classification = 'mission' | 'ministry' | 'nature'
 export type Measure = 'ae' | 'cp'
-export type RevenueStatus = 'initial_estimate' | 'revised_estimate' | 'budget_bill'
+export type RevenueStatus = 'executed' | 'initial_estimate' | 'revised_estimate' | 'budget_bill'
 
 export interface Source {
   dataset: {
@@ -53,9 +53,13 @@ export interface ExpenditureResponse {
 }
 
 export interface RevenueItem {
+  code?: string | null
   slug: string
   label: string
   amount: string
+  level?: number | null
+  parent_code?: string | null
+  breadcrumb?: string[]
   is_aggregate: boolean
   is_deduction: boolean
   source_row_number: number | null

@@ -5,6 +5,7 @@ import type {
   RevenueResponse,
   RevenueStatus,
 } from '@/types/api'
+import { cachedJson } from './apiCache'
 
 const apiBaseUrl = (import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8080').replace(/\/$/, '')
 
@@ -12,13 +13,7 @@ async function get<T>(path: string, parameters: Record<string, string | number>)
   const url = new URL(`${apiBaseUrl}${path}`)
   Object.entries(parameters).forEach(([key, value]) => url.searchParams.set(key, String(value)))
 
-  const response = await fetch(url, { headers: { Accept: 'application/json' } })
-  if (!response.ok) {
-    const payload = (await response.json().catch(() => null)) as { message?: string } | null
-    throw new Error(payload?.message ?? `L’API a répondu avec le statut ${response.status}.`)
-  }
-
-  return response.json() as Promise<T>
+  return cachedJson<T>(url, 30 * 60 * 1000)
 }
 
 export function fetchExpenditure(classification: Classification, measure: Measure) {
@@ -29,7 +24,7 @@ export function fetchExpenditure(classification: Classification, measure: Measur
   })
 }
 
-export function fetchRevenue(status: RevenueStatus) {
-  const year = status === 'budget_bill' ? 2026 : 2025
+export function fetchRevenue(status: RevenueStatus, requestedYear?: number) {
+  const year = requestedYear ?? (status === 'budget_bill' ? 2026 : 2025)
   return get<RevenueResponse>('/api/v1/state-revenue', { year, status })
 }
