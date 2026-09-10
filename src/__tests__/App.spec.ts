@@ -5,6 +5,7 @@ import App from '../App.vue'
 import ExpenditureView from '@/views/ExpenditureView.vue'
 import RevenueView from '@/views/RevenueView.vue'
 import OverviewView from '@/views/OverviewView.vue'
+import { clearApiSessionCache } from '@/services/apiCache'
 
 const source = {
   dataset: {
@@ -41,7 +42,7 @@ function routerAt(path: string) {
   return router.push(path).then(() => router)
 }
 
-afterEach(() => vi.restoreAllMocks())
+afterEach(() => { vi.restoreAllMocks(); clearApiSessionCache() })
 
 describe('App', () => {
   it('affiche les dépenses et leur provenance', async () => {
@@ -83,9 +84,8 @@ describe('App', () => {
     expect(wrapper.text()).toContain('Direction du Budget')
     expect(wrapper.text()).toContain('Une API publique et gratuite')
     expect(wrapper.get('a[href$="/docs/api"]').attributes('target')).toBe('_blank')
-    expect(wrapper.get('a[href="https://github.com/ogrre/ou-vont-mes-impots-api"]').text()).toContain(
-      'Code source de l’API',
-    )
+    expect(wrapper.get('a.api-link').text()).toContain('API / OpenAPI')
+    expect(wrapper.get('a.github-link').attributes('aria-label')).toContain('backend')
     const cpHelp = wrapper.get('[aria-label="Comprendre CP"]')
     await cpHelp.trigger('click')
     expect(wrapper.text()).toContain('Crédits de paiement')
