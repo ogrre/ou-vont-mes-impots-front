@@ -1,31 +1,37 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import ExpenditureView from '@/views/ExpenditureView.vue'
-import RevenueView from '@/views/RevenueView.vue'
-import OverviewView from '@/views/OverviewView.vue'
-import AccessibilityView from '@/views/AccessibilityView.vue'
-import LegalNoticeView from '@/views/LegalNoticeView.vue'
-import NotFoundView from '@/views/NotFoundView.vue'
-import PrivacyView from '@/views/PrivacyView.vue'
-import SiteMapView from '@/views/SiteMapView.vue'
+const RevenueView = () => import('@/views/RevenueView.vue')
+const OverviewView = () => import('@/views/OverviewView.vue')
+const AccessibilityView = () => import('@/views/AccessibilityView.vue')
+const LegalNoticeView = () => import('@/views/LegalNoticeView.vue')
+const NotFoundView = () => import('@/views/NotFoundView.vue')
+const PrivacyView = () => import('@/views/PrivacyView.vue')
+const SiteMapView = () => import('@/views/SiteMapView.vue')
+const HomeView = () => import('@/views/HomeView.vue')
+const BudgetDrilldownPlaceholderView = () => import('@/views/BudgetDrilldownPlaceholderView.vue')
+const SpendingExplorerView = () => import('@/views/SpendingExplorerView.vue')
+const MethodologyView = () => import('@/views/MethodologyView.vue')
+const CofogDetailView = () => import('@/views/CofogDetailView.vue')
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   scrollBehavior: () => ({ top: 0 }),
   routes: [
-    { path: '/', redirect: '/depenses' },
+    { path: '/', name: 'home', component: HomeView, meta: { title: 'Accueil' } },
+    { path: '/budget-etat/:year(\\d+)', name: 'state-budget', component: BudgetDrilldownPlaceholderView, meta: { title: 'Budget de l’État' } },
+    { path: '/budget-etat/:year(\\d+)/missions/:code', name: 'state-budget-mission', component: BudgetDrilldownPlaceholderView, meta: { title: 'Mission du budget de l’État' } },
+    { path: '/budget-etat/:year(\\d+)/programmes/:code', name: 'state-budget-programme', component: BudgetDrilldownPlaceholderView, meta: { title: 'Programme du budget de l’État' } },
+    { path: '/budget-etat/:year(\\d+)/programmes/:programme/actions/:code', name: 'state-budget-action', component: BudgetDrilldownPlaceholderView, meta: { title: 'Action du budget de l’État' } },
     {
       path: '/vue-d-ensemble',
       name: 'overview',
       component: OverviewView,
       meta: { title: 'Vue d’ensemble' },
     },
-    {
-      path: '/depenses',
-      name: 'expenditure',
-      component: ExpenditureView,
-      meta: { title: 'Les dépenses' },
-    },
+    { path: '/depenses', redirect: '/explorer/2024' },
+    { path: '/explorer/:year(\\d+)', name: 'explorer', component: SpendingExplorerView, meta: { title: 'Explorer les dépenses' } },
     { path: '/recettes', name: 'revenue', component: RevenueView, meta: { title: 'Les recettes' } },
+    { path: '/depenses/cofog/:year(\\d+)/:code', name: 'cofog-detail', component: CofogDetailView, meta: { title: 'Détail d’une fonction COFOG' } },
+    { path: '/methodologie', name: 'methodology', component: MethodologyView, meta: { title: 'Méthodologie' } },
     {
       path: '/accessibilite',
       name: 'accessibility',
