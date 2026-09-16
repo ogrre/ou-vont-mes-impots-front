@@ -3,7 +3,7 @@ import MoneyAmount from '@/components/MoneyAmount.vue'
 import QualityBadge from '@/components/QualityBadge.vue'
 import type { DistributionItem } from '@/types/publicFinance'
 
-defineProps<{ items: DistributionItem[]; maxAmount: number }>()
+const props = defineProps<{ items: DistributionItem[]; maxAmount: number; selectedCode?: string | null; explanations?: Record<string, string> }>()
 const emit = defineEmits<{ select: [item: DistributionItem] }>()
 </script>
 
@@ -16,6 +16,11 @@ const emit = defineEmits<{ select: [item: DistributionItem] }>()
         <span class="distribution-values"><strong>{{ item.percent ? `${item.percent.replace('.', ',')} %` : '—' }}</strong><small>part du total</small></span>
         <QualityBadge :status="item.quality_status" />
       </button>
+      <div v-if="props.selectedCode === item.code" class="distribution-inline-detail" role="status" aria-live="polite">
+        <strong>À quoi correspond cette ligne&nbsp;?</strong>
+        <p>{{ item.description ?? props.explanations?.[item.code ?? ''] ?? 'Cette ligne détaille la catégorie sélectionnée. Son montant est déjà compris dans le total affiché.' }}</p>
+        <small>{{ item.amount === null ? 'Montant indisponible pour cette année.' : 'Montant et part fournis par l’API.' }}</small>
+      </div>
     </li>
   </ol>
 </template>
