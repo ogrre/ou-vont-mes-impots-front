@@ -36,6 +36,7 @@ describe('HomeView', () => {
     expect(wrapper.text()).toContain('Services généraux')
     expect(wrapper.text()).toContain('Donnée à consolider')
     expect(wrapper.text()).toContain('Recettes publiques')
+    expect(wrapper.get('[aria-label="Comprendre COFOG"]')).toBeTruthy()
   })
 
   it('affiche une erreur et permet de réessayer', async () => {

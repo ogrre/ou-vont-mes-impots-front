@@ -4,7 +4,7 @@ import MoneyAmount from './MoneyAmount.vue'
 import QualityBadge from './QualityBadge.vue'
 import SourcePanel from './SourcePanel.vue'
 import DonutChart, { type DonutSegment } from './DonutChart.vue'
-import InfoBubble from './InfoBubble.vue'
+import GlossaryInfo from './GlossaryInfo.vue'
 import type { HomeBlock, HomeItem } from '@/types/publicFinance'
 
 const props = defineProps<{ block: HomeBlock; year: number }>()
@@ -23,7 +23,7 @@ const chartSegments: DonutSegment[] = [
 
 <template>
   <section id="cofog" class="home-section feature-section" aria-labelledby="what-for-title">
-    <div class="section-heading"><div><p class="eyebrow">Destination des dépenses</p><div class="heading-with-help"><h2 id="what-for-title">Où sont dépensées les finances publiques&nbsp;?</h2><InfoBubble term="COFOG" title="La classification COFOG"><span>Elle répartit les dépenses publiques par fonction : santé, enseignement, défense, protection sociale, etc. Les montants couvrent l’ensemble des administrations publiques.</span></InfoBubble></div></div><QualityBadge :status="block.quality_status" :quality="block.quality" show-reason /></div>
+    <div class="section-heading"><div><p class="eyebrow">Destination des dépenses</p><div class="heading-with-help"><h2 id="what-for-title">Où sont dépensées les finances publiques&nbsp;?</h2><GlossaryInfo term="COFOG" /></div></div><QualityBadge :status="block.quality_status" :quality="block.quality" show-reason /></div>
     <p class="section-description">{{ block.description }}</p>
     <div v-if="chartSegments.length" class="cofog-chart" aria-labelledby="cofog-chart-title">
       <div><p class="eyebrow">Vue d’ensemble</p><h3 id="cofog-chart-title">La répartition en un coup d’œil</h3><p class="chart-caption">Les plus grandes fonctions sont affichées séparément ; les autres sont regroupées uniquement dans le graphique.</p></div>

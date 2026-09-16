@@ -272,6 +272,12 @@ h3 {
 .view-mode button.active { background: #153f31; color: #fff; }
 .context-help { max-width: 62rem; margin: 1.2rem 0 2rem; color: #52615b; line-height: 1.55; }
 .explorer-section { margin-top: 2rem; padding: clamp(1.2rem, 4vw, 3rem); border-radius: 1.8rem; background: #fff; box-shadow: 0 22px 65px rgba(36, 48, 42, 0.07); }
+.revenue-world { margin-top: 2rem; padding: clamp(1.2rem, 4vw, 3rem); border-radius: 1.8rem; background: #fff; box-shadow: 0 22px 65px rgba(36, 48, 42, 0.07); }
+.state-revenue-world { border-top: 0.35rem solid #f0d344; }
+.revenue-detail-heading { display: flex; justify-content: space-between; gap: 1rem; align-items: end; margin: 2rem 0 1rem; padding-top: 1.4rem; border-top: 1px solid #ebece6; }
+.revenue-detail-heading h3 { margin: 0; color: #153f31; }
+.revenue-detail-heading .eyebrow { margin-bottom: 0.35rem; }
+.revenue-detail-table { margin-top: 2rem; }
 .distribution-bars { display: grid; gap: 0.3rem; padding: 0; margin: 0; list-style: none; }
 .distribution-row { width: 100%; display: grid; grid-template-columns: minmax(12rem, 1.25fr) minmax(8rem, 2fr) minmax(7rem, 0.55fr) auto; gap: 1rem; align-items: center; padding: 0.85rem 0; border: 0; border-bottom: 1px solid #edf0eb; background: transparent; color: inherit; text-align: left; cursor: pointer; }
 .distribution-name { display: grid; gap: 0.2rem; }
@@ -303,6 +309,9 @@ h3 {
 .home-section.feature-section { border-top-width: 0.25rem; }
 .spending-overview { display: flex; min-height: 100%; flex-direction: column; justify-content: space-between; background: #153f31; color: #fff; }
 .spending-overview .eyebrow, .spending-overview .section-description { color: #d4e1db; }
+.money-amount { white-space: nowrap; }
+.money-unit,
+.money-currency { text-decoration: underline dotted; text-decoration-color: #7a8b83; text-underline-offset: 0.18em; cursor: help; }
 .spending-overview .section-heading > .money-amount { color: #f0d344; font-size: 1.15rem; font-weight: 800; }
 .revenue-sources { gap: 0.7rem; }
 .revenue-source { padding: 1rem; border-radius: 0.8rem; }
@@ -774,6 +783,20 @@ select {
   color: #536159;
   background: #faf8ed;
 }
+.distribution-selection {
+  margin-top: 1.4rem;
+  padding: 1.2rem 1.3rem;
+  border: 1px solid #dce5df;
+  border-radius: 1rem;
+  background: #f7faf7;
+}
+.distribution-selection .section-heading { margin-bottom: 0.7rem; }
+.distribution-selection h3 { margin: 0; color: #153f31; }
+.distribution-selection > p { max-width: 58rem; margin: 0.45rem 0 0; color: #536159; line-height: 1.55; }
+.distribution-inline-detail { margin: 0.15rem 0 0.8rem; padding: 0.9rem 1rem 1rem 1.25rem; border-left: 0.25rem solid #e7b93f; background: #fffdf4; color: #536159; }
+.distribution-inline-detail strong { color: #153f31; }
+.distribution-inline-detail p { margin: 0.35rem 0; line-height: 1.5; }
+.distribution-inline-detail small { color: #6d7972; }
 .quality-details {
   color: #536159;
 }
