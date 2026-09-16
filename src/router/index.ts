@@ -67,11 +67,6 @@ const router = createRouter({
 
 router.afterEach((to) => {
   document.title = `${String(to.meta.title ?? 'Mais où vont mes impôts ?')} — Mais où vont mes impôts ?`
-  requestAnimationFrame(() => {
-    const heading = document.querySelector<HTMLElement>('#contenu h1')
-    heading?.setAttribute('tabindex', '-1')
-    heading?.focus({ preventScroll: true })
-  })
 })
 
 export default router
