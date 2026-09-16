@@ -16,4 +16,10 @@ describe('Explorateur financier', () => {
     expect(wrapper.text()).toContain('Donnée indisponible')
     expect(wrapper.text()).toContain('Donnée indisponible')
   })
+
+  it('affiche l’explication API sous la ligne sélectionnée en mode barres', async () => {
+    const wrapper = mount(DistributionExplorer, { props: { view: 'bars', items: [{ code: '17', label: 'Taxes indirectes', description: 'Explication fournie par l’API.', amount: '100.00', percent: '10.00', per_100: '10.00', quality_status: 'validated' }] } })
+    await wrapper.get('.distribution-row').trigger('click')
+    expect(wrapper.find('.distribution-inline-detail').text()).toContain('Explication fournie par l’API.')
+  })
 })

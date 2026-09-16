@@ -33,6 +33,7 @@ export interface ExpenditureItem {
   code: string | null
   slug: string
   label: string
+  description?: string | null
   amount: string
   percentage: string | null
   components: Array<{ code: string; label: string; amount: string }>
@@ -56,6 +57,7 @@ export interface RevenueItem {
   code?: string | null
   slug: string
   label: string
+  description?: string | null
   amount: string
   level?: number | null
   parent_code?: string | null

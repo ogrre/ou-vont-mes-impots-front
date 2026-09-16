@@ -7,6 +7,8 @@ import type {
   HistoryResponse,
   FinanceSearchResponse,
   PublicFinanceHome,
+  Quality,
+  DistributionItem,
 } from '@/types/publicFinance'
 import { cachedJson } from '@/services/apiCache'
 
@@ -48,8 +50,30 @@ export interface FinanceCategory {
   parent_id?: number | null
 }
 
+export interface CofogDetailResponse {
+  year: number
+  code: string
+  label: string
+  description?: string | null
+  amount: string | null
+  denominator: string | null
+  items: Array<DistributionItem>
+  quality: Quality
+  source: string | null
+  dataset: string | null
+  accounting_basis: string
+  scope: string
+  measurement_type: string
+  stage: string
+  consolidation: string
+}
+
 export function fetchCategoryChildren(classification: string, category: string) {
   return getWithTtl<{ classification: string; category: string; categories: FinanceCategory[] }>(`/api/v1/categories/${encodeURIComponent(classification)}/${encodeURIComponent(category)}/children`)
+}
+
+export function fetchCofogDetail(year: number, category: string) {
+  return getWithTtl<CofogDetailResponse>(`/api/v1/cofog/${year}/${encodeURIComponent(category)}`)
 }
 
 export function fetchBudgetMissions(year: number) {
