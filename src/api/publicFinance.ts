@@ -14,9 +14,11 @@ import { cachedJson } from '@/services/apiCache'
 
 const apiBaseUrl = (import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8080').replace(/\/$/, '')
 export const MIN_AVAILABLE_YEAR = 2017
-const SNAPSHOT_CACHE_TTL = 30 * 60 * 1000
-const SEARCH_CACHE_TTL = 5 * 60 * 1000
-const YEARS_CACHE_TTL = 60 * 60 * 1000
+// Les imports sont versionnés et changent peu : conserver les vues déjà
+// consultées évite de refaire les mêmes requêtes à chaque navigation.
+const SNAPSHOT_CACHE_TTL = 6 * 60 * 60 * 1000
+const SEARCH_CACHE_TTL = 10 * 60 * 1000
+const YEARS_CACHE_TTL = 24 * 60 * 60 * 1000
 
 async function getWithTtl<T>(path: string, parameters: Record<string, string | number | undefined> = {}, ttl = SNAPSHOT_CACHE_TTL): Promise<T> {
   const url = new URL(`${apiBaseUrl}${path}`)
