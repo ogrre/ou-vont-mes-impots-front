@@ -115,6 +115,7 @@ export interface BudgetActionsResponse {
 export interface DistributionItem {
   code: string | null
   label: string
+  description?: string | null
   amount: string | null
   percent: string | null
   per_100: string | null
