@@ -11,7 +11,7 @@ Ce dépôt contient uniquement l’application frontend Vue. L’API Laravel est
 
 ## Prérequis
 
-- Node.js 22.18 ou version ultérieure de Node.js 22 ;
+- Node.js 24 ou version ultérieure de Node.js 24 ;
 - Bun 1.x ;
 - l’API Laravel installée et alimentée avec les jeux de données documentés côté backend.
 
