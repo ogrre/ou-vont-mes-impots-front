@@ -20,9 +20,28 @@ const loading = ref(true)
 const error = ref<string | null>(null)
 const revenueView = ref<ViewMode>('bars')
 const stateRows = computed(() => stateRevenue.value?.items ?? [])
-const revenueTotals = computed(() => stateRows.value.filter((item) => item.level === 3 && item.amount !== null))
-function cleanRevenueLabel(label: string) { return label.replace(/(\s+\(total\))+$/giu, ' (total)') }
-const stateVisualItems = computed(() => revenueTotals.value.map((item) => ({ code: item.code ?? item.slug, label: cleanRevenueLabel(item.label), description: item.description, amount: item.amount, percent: null, per_100: null, quality_status: 'validated' as const })))
+const revenueDetails = computed(() => {
+  const levelRows = stateRows.value.filter((item) => item.level === 3 && item.amount !== null)
+  const candidates = levelRows.length ? levelRows : stateRows.value.filter((item) => item.amount !== null)
+  const seen = new Set<string>()
+
+  return candidates.filter((item) => {
+    const key = `${item.code ?? item.slug}:${item.amount}`
+    if (seen.has(key)) return false
+    seen.add(key)
+    return true
+  })
+})
+function cleanRevenueLabel(label: string) { return label.replace(/(?:\s+\(total\))+$/iu, ' (total)') }
+const stateVisualItems = computed(() => revenueDetails.value.map((item) => ({
+  code: item.code ?? item.slug,
+  label: cleanRevenueLabel(item.label),
+  description: [item.breadcrumb?.slice(0, -1).join(' › '), item.description].filter(Boolean).join(' — '),
+  amount: item.amount,
+  percent: null,
+  per_100: null,
+  quality_status: 'validated' as const,
+})))
 const formatter = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', notation: 'compact', maximumFractionDigits: 1 })
 function format(value: string | null | undefined) { return value === null || value === undefined ? 'Donnée indisponible' : formatter.format(Number(value)) }
 async function load() {
@@ -43,7 +62,7 @@ onMounted(load)
     <div v-else-if="error" class="state-card error" role="alert">{{ error }}<button type="button" @click="load">Réessayer</button></div>
     <template v-else>
       <section class="revenue-world"><div class="section-heading"><div><p class="eyebrow">INSEE · comptes nationaux <GlossaryInfo term="Comptes nationaux" /></p><h2>Recettes publiques</h2></div><QualityBadge v-if="overview" :status="overview.revenues.public_revenues.quality.status" :quality="overview.revenues.public_revenues.quality" show-reason /></div><p>Ce total concerne les administrations publiques consolidées <GlossaryInfo term="Consolidé" />, pas uniquement l’État. Les catégories détaillées disponibles dans cette page concernent le budget de l’État.</p><strong class="revenue-total">{{ format(overview?.revenues.public_revenues.amount) }}</strong><SourcePanel v-if="overview" :provenance="{ source: overview.revenues.public_revenues.source, dataset: overview.revenues.public_revenues.dataset }" /></section>
-      <section class="revenue-world state-revenue-world"><div class="section-heading"><div><p class="eyebrow">PLRG <GlossaryInfo term="PLRG" /> · comptabilité budgétaire <GlossaryInfo term="Comptabilité budgétaire" /></p><h2>Recettes du budget de l’État</h2></div><QualityBadge v-if="overview" :status="overview.revenues.state_budget_revenues.quality.status" :quality="overview.revenues.state_budget_revenues.quality" show-reason /></div><p>Cette partie montre concrètement d’où viennent les recettes de l’État : impôt sur le revenu, TVA, autres impôts, taxes, prélèvements et autres recettes. Les montants sont exécutés en {{ year }}.</p><p class="context-help"><strong>Attention :</strong> le fichier contient des catégories, des sous-totaux et des lignes détaillées. Ils ne doivent pas être additionnés entre eux.</p><div v-if="stateVisualItems.length" class="revenue-detail-heading"><div><p class="eyebrow">Répartition</p><h3>Les principales recettes exécutées</h3></div><span>{{ stateVisualItems.length }} catégories</span></div><ViewModeSelector v-if="stateVisualItems.length" v-model="revenueView" /><DistributionExplorer v-if="stateVisualItems.length" :items="stateVisualItems" :view="revenueView" /><div v-if="stateRevenue" class="table-scroll revenue-detail-table"><table class="distribution-table"><caption>Détail des recettes exécutées du budget de l’État en {{ year }}</caption><thead><tr><th scope="col">Hiérarchie</th><th scope="col">Libellé</th><th scope="col">Montant exécuté</th></tr></thead><tbody><tr v-for="item in stateRows" :key="item.slug"><td>{{ item.breadcrumb?.slice(0, -1).join(' › ') || '—' }}</td><th scope="row">{{ item.label }}</th><td>{{ format(item.amount) }}</td></tr></tbody></table></div><p v-else class="empty-note">Détail indisponible pour cette année.</p><SourcePanel v-if="stateRevenue" :provenance="{ source: stateRevenue.source.publisher?.name ?? stateRevenue.source.publisher?.source_name, dataset: stateRevenue.source.dataset?.name, source_url: stateRevenue.source.dataset?.source_url }" /></section>
+      <section class="revenue-world state-revenue-world"><div class="section-heading"><div><p class="eyebrow">PLRG <GlossaryInfo term="PLRG" /> · comptabilité budgétaire <GlossaryInfo term="Comptabilité budgétaire" /></p><h2>Recettes du budget de l’État</h2></div><QualityBadge v-if="overview" :status="overview.revenues.state_budget_revenues.quality.status" :quality="overview.revenues.state_budget_revenues.quality" show-reason /></div><p>Cette partie montre concrètement d’où viennent les recettes de l’État : impôt sur le revenu, TVA, autres impôts, taxes, prélèvements et autres recettes. Les montants sont exécutés en {{ year }}.</p><p class="context-help"><strong>À lire :</strong> les lignes affichées viennent de la hiérarchie officielle. Les sous-totaux et totaux ne sont pas additionnés aux lignes détaillées.</p><div v-if="stateVisualItems.length" class="revenue-detail-heading"><div><p class="eyebrow">Répartition détaillée</p><h3>Les recettes exécutées</h3></div><span>{{ stateVisualItems.length }} lignes</span></div><ViewModeSelector v-if="stateVisualItems.length" v-model="revenueView" /><DistributionExplorer v-if="stateVisualItems.length" :items="stateVisualItems" :view="revenueView" /><p v-else class="empty-note">Détail indisponible pour cette année.</p><SourcePanel v-if="stateRevenue" :provenance="{ source: stateRevenue.source.publisher?.name ?? stateRevenue.source.publisher?.source_name, dataset: stateRevenue.source.dataset?.name, source_url: stateRevenue.source.dataset?.source_url }" /></section>
     </template>
   </main>
 </template>

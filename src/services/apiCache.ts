@@ -6,38 +6,42 @@ interface CacheEntry<T> {
   value: T
 }
 
-function storage() {
+function storages(): Storage[] {
   try {
-    return window.sessionStorage
+    // sessionStorage donne la meilleure isolation pendant la navigation. Le
+    // localStorage permet ensuite de réafficher immédiatement les données
+    // stables lors d’un retour sur le site ou d’une nouvelle visite.
+    return [window.sessionStorage, window.localStorage]
   } catch {
-    return null
+    return []
   }
 }
 
 function read<T>(key: string): T | undefined {
-  const store = storage()
-  if (!store) return undefined
-  try {
-    const raw = store.getItem(CACHE_PREFIX + key)
-    if (!raw) return undefined
-    const entry = JSON.parse(raw) as CacheEntry<T>
-    if (entry.expiresAt <= Date.now()) {
-      store.removeItem(CACHE_PREFIX + key)
-      return undefined
+  for (const store of storages()) {
+    try {
+      const raw = store.getItem(CACHE_PREFIX + key)
+      if (!raw) continue
+      const entry = JSON.parse(raw) as CacheEntry<T>
+      if (entry.expiresAt <= Date.now()) {
+        store.removeItem(CACHE_PREFIX + key)
+        continue
+      }
+      return entry.value
+    } catch {
+      // Une implémentation de stockage indisponible ne doit pas bloquer l’API.
     }
-    return entry.value
-  } catch {
-    return undefined
   }
+  return undefined
 }
 
 function write<T>(key: string, value: T, ttl: number) {
-  const store = storage()
-  if (!store) return
-  try {
-    store.setItem(CACHE_PREFIX + key, JSON.stringify({ value, expiresAt: Date.now() + ttl } satisfies CacheEntry<T>))
-  } catch {
-    // Le cache est une optimisation : un quota plein ne doit jamais bloquer l’API.
+  for (const store of storages()) {
+    try {
+      store.setItem(CACHE_PREFIX + key, JSON.stringify({ value, expiresAt: Date.now() + ttl } satisfies CacheEntry<T>))
+    } catch {
+      // Le cache est une optimisation : un quota plein ne doit jamais bloquer l’API.
+    }
   }
 }
 
@@ -70,14 +74,14 @@ export function cachedJson<T>(requestUrl: string | URL, ttl: number): Promise<T>
 }
 
 export function clearApiSessionCache() {
-  const store = storage()
-  if (!store) return
-  try {
-    for (let index = store.length - 1; index >= 0; index -= 1) {
-      const key = store.key(index)
-      if (key?.startsWith(CACHE_PREFIX)) store.removeItem(key)
+  for (const store of storages()) {
+    try {
+      for (let index = store.length - 1; index >= 0; index -= 1) {
+        const key = store.key(index)
+        if (key?.startsWith(CACHE_PREFIX)) store.removeItem(key)
+      }
+    } catch {
+      // Ignore les implémentations de stockage indisponibles.
     }
-  } catch {
-    // Ignore les implémentations de stockage indisponibles.
   }
 }
