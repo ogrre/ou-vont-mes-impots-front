@@ -1586,3 +1586,25 @@ footer p {
     scroll-behavior: auto !important;
   }
 }
+
+.budget-detail-intro {
+  margin: 1.5rem 0;
+  padding: 1.25rem 1.5rem;
+  border-left: 0.25rem solid #e7b93f;
+  border-radius: 0.8rem;
+  background: #fffdf4;
+}
+
+.budget-detail-intro p {
+  margin: 0;
+  line-height: 1.55;
+}
+
+.budget-detail-intro .detail-note {
+  margin-top: 0.75rem;
+  color: #68736e;
+}
+
+.budget-amounts > div {
+  min-width: 11rem;
+}

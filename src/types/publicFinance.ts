@@ -81,7 +81,9 @@ export interface BudgetAmounts {
 
 export interface BudgetNode {
   code: string | null
+  slug?: string | null
   label: string
+  description?: string | null
   year: number
   hierarchy_level: 'mission' | 'programme' | 'action' | 'sub_action' | string
   parent_action_code?: string | null
